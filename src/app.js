@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const multerMiddleware = require('./api/middleware/multer');
 const adminRoutes = require('./api/routes/admin');
 const storageRoutes = require('./api/routes/storage');
+const mongoConnect = require('./utils/database');
 
 const app = express();
 
@@ -12,4 +13,7 @@ app.use(multerMiddleware);
 app.use(storageRoutes);
 app.use('/admin', adminRoutes);
 
-app.listen(3000);
+mongoConnect()
+  .then(() => {
+    app.listen(3000);
+  });

@@ -1,4 +1,4 @@
-const getSoundFileStream = require('../../services/usecases/getSoundFileStream');
+const getSoundFileStream = require('../../domain/usecases/getSoundFileStream');
 
 exports.getSoundFile = (req, res) => {
   const errorHandler = (serviceError) => {
