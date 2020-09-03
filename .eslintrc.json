@@ -1,19 +1,25 @@
 {
-    "env": {
-        "commonjs": true,
-        "es2020": true,
-        "node": true
-    },
-    "extends": [
-        "airbnb-base"
+  "env": {
+    "commonjs": true,
+    "es2020": true,
+    "node": true
+  },
+  "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaVersion": 2020
+  },
+  "rules": {
+    "semi": [
+      "warn",
+      "always"
     ],
-    "parserOptions": {
-        "ecmaVersion": 2020
-    },
-    "rules": {
-        "semi": ["warn", "always"],
-        "quotes": ["warn", "single"],
-        "comma-dangle":["warn","only-multiline"],
-        "no-underscore-dangle":["warn","never"]
-    }
+    "quotes": [
+      "warn",
+      "single"
+    ],
+    "comma-dangle": [
+      "warn",
+      "only-multiline"
+    ]
+  }
 }

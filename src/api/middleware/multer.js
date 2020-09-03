@@ -1,9 +1,11 @@
 const multer = require('multer');
+const path = require('path');
+const crypto = require('crypto');
 
 const fileStorage = multer.diskStorage({
   destination: 'audio-files',
   filename: (req, file, callback) => {
-    callback(null, `${file.originalname}`);
+    callback(null, `${crypto.randomBytes(12).toString('hex')}1111111${path.extname(file.originalname)}`);
   }
 });
 
@@ -15,7 +17,9 @@ const multerFilter = (req, file, callback) => {
   }
 };
 
-module.exports = multer({
+const uploadFiles = multer({
   storage: fileStorage,
   fileFilter: multerFilter
-}).single('soundFile');
+}).array('soundFiles', 100);
+
+module.exports = uploadFiles;
