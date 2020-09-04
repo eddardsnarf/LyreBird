@@ -32,21 +32,20 @@ class Sound {
             });
     }
 
-    static get(ids) {
+    static async fetchById(id) {
+        return (await this.fetchByIds([id]))[0];
+    }
+
+    static async fetchByIds(ids) {
         const db = getDb();
-        return db.collection(SOUND_COLLECTION_NAME)
+        const sounds = await db.collection(SOUND_COLLECTION_NAME)
             .find({
                 _id: {
                     $in: ids.map((id) => new mongodb.ObjectID(id))
                 }
-            }).toArray()
-            .then((sounds) => {
-                console.log(sounds);
-                return sounds;
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+            }).toArray();
+        console.log(sounds);
+        return sounds;
     }
 }
 

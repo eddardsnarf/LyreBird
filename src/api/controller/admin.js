@@ -1,5 +1,5 @@
-const saveUploadedFiles = require('../../domain/usecases/saveUploadedFileData');
-const saveSoundSet = require('../../domain/usecases/saveSoundSet');
+const saveUploadedFiles = require('../../domain/usecases/saveUploadedFileData').saveFiles;
+const saveSoundSet = require('../../domain/usecases/saveSoundSet').saveSoundSet;
 const checkFileUpload = require('../../domain/usecases/checkFileUpload').checkFileUpload;
 
 const ServiceError = require('../../utils/serviceError');
@@ -8,9 +8,9 @@ module.exports.postSounds = async (req, res) => {
     try {
         console.log(req.files);
         checkFileUpload(req);
-        const insertedIds = await saveUploadedFiles.saveFiles(req.files);
+        const insertedSounds = await saveUploadedFiles(req.files);
         res.status(200)
-            .send({insertedIds});
+            .send(insertedSounds);
     } catch (error) {
         console.log(error);
         if (error instanceof ServiceError) {
@@ -28,9 +28,9 @@ module.exports.postSounds = async (req, res) => {
 
 module.exports.postSoundSet = async (req, res) => {
     try {
-        await saveSoundSet.saveSoundSet(req);
+        const soundSet = await saveSoundSet(req);
         res.status(200)
-            .send('Set has been saved');
+            .send(soundSet);
     } catch (err) {
         console.log(err);
         if (err instanceof ServiceError) {

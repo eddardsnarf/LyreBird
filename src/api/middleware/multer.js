@@ -5,7 +5,7 @@ const crypto = require('crypto');
 const fileStorage = multer.diskStorage({
   destination: 'audio-files',
   filename: (req, file, callback) => {
-    callback(null, `${crypto.randomBytes(12).toString('hex')}1111111${path.extname(file.originalname)}`);
+    callback(null, `${crypto.randomBytes(12).toString('hex')}${path.extname(file.originalname)}`);
   }
 });
 
