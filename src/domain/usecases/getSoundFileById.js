@@ -4,7 +4,7 @@ const rootDir = require('../../utils/path');
 const Sound = require('../../data/model/sound');
 const ServiceError = require('../../utils/serviceError');
 
-exports.getSoundFileStream = async (soundId, callback) => {
+exports.getSoundFileById = async (soundId, callback) => {
   const sound = (await Sound.fetchById(soundId));
   const soundPath = path.join(rootDir, '..', sound.path);
   const rs = fs.createReadStream(soundPath);

@@ -1,6 +1,21 @@
 const ServiceError = require('../../utils/serviceError');
-const getSoundFileStream = require('../../domain/usecases/getSoundFileStream').getSoundFileStream;
+const getSoundFileStream = require('../../domain/usecases/getSoundFileById').getSoundFileById;
 const getSoundSet = require('../../domain/usecases/getSoundSet').getSoundSet;
+const getSoundByName = require('../../domain/usecases/getSoundByName').getSoundFileByName;
+
+exports.searchByName = async (req, res) => {
+    try {
+        const sounds = await getSoundByName(req.body.soundName);
+        res.status(200)
+            .send(sounds);
+    }catch (err) {
+        if (err instanceof ServiceError) {
+            res.status(err.code).send(err.message);
+        } else {
+            res.status(500).send(err);
+        }
+    }
+};
 
 exports.getSoundFile = async (req, res) => {
     const errorHandler = (serviceError) => {

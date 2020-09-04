@@ -9,7 +9,7 @@ exports.saveSoundSet = async (req) => {
 
     if (await checkSoundIds(soundIds)) {
         const soundSet = new SoundSet(name, iconUrl, soundIds);
-        return soundSet.save();
+        return (await soundSet.save());
     } else {
         throw new ServiceError(400, 'sound ids were not found.');
     }

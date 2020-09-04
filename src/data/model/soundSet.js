@@ -9,52 +9,42 @@ class SoundSet {
         this.soundIds = soundIds.map((id) => new mongodb.ObjectID(id));
     }
 
-    save() {
+    async save() {
         const db = getDb();
-        return db.collection(SOUND_SET_COLLECTION_NAME)
-            .insertOne(this)
-            .then((res) => {
-                    console.log(res.ops[0]);
-                    return res.ops[0];
-                }
-            )
-            .catch((err) => {
-                console.log(err);
-            });
+        const savedSet = await db.collection(SOUND_SET_COLLECTION_NAME)
+            .insertOne(this);
+        console.log(savedSet.ops[0]);
+        return savedSet.ops[0];
     }
 
-    static fetchById(setId) {
+    static async fetchById(setId) {
+        const aggregateOperation = [
+            {
+                $match: {
+                    _id: {
+                        $eq: new mongodb.ObjectID(setId)
+                    }
+                }
+            },
+            {
+                $lookup: {
+                    from: 'sounds',
+                    localField: 'soundIds',
+                    foreignField: '_id',
+                    as: 'soundArray'
+                }
+            },
+            {
+                $project: {
+                    'soundIds': false
+                }
+            }]
         const db = getDb();
-        return db.collection(SOUND_SET_COLLECTION_NAME)
-            .aggregate([
-                {
-                    $match: {
-                        _id: {
-                            $eq: new mongodb.ObjectID(setId)
-                        }
-                    }
-                },
-                {
-                    $lookup: {
-                        from: 'sounds',
-                        localField: 'soundIds',
-                        foreignField: '_id',
-                        as: 'soundArray'
-                    }
-                },
-                {
-                    $project: {
-                        'soundIds': false
-                    }
-                }])
-            .next()
-            .then((res) => {
-                console.log(res);
-                return res;
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        const savedSets = await db.collection(SOUND_SET_COLLECTION_NAME)
+            .aggregate(aggregateOperation)
+            .next();
+        console.log(savedSets);
+        return savedSets;
     }
 }
 

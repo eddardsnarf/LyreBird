@@ -8,28 +8,30 @@ class Sound {
         this.path = path;
     }
 
-    save() {
+    async save() {
         const db = getDb();
-        return db.collection(SOUND_COLLECTION_NAME)
-            .insertOne(this)
-            .then((res) => {
-                console.log(res);
-                return res;
-            }).catch((err) => {
-                console.log(err);
-            });
+        const savedSoundResult = await db.collection(SOUND_COLLECTION_NAME)
+            .insertOne(this);
+        console.log(savedSoundResult);
+        return savedSoundResult.ops[0];
     }
 
-    static save(sounds) {
+    static async save(sounds) {
         const db = getDb();
-        return db.collection(SOUND_COLLECTION_NAME)
-            .insertMany(sounds)
-            .then((res) => {
-                console.log(res);
-                return res;
-            }).catch((err) => {
-                console.log(err);
-            });
+        const savedSoundsResult = await db.collection(SOUND_COLLECTION_NAME)
+            .insertMany(sounds);
+        console.log(savedSoundsResult);
+        return savedSoundsResult.ops;
+    }
+
+    static async fetchByName(name) {
+        const db = getDb();
+        const sounds = await db.collection(SOUND_COLLECTION_NAME)
+            .find({
+                name: {$regex: ".*" + name + ".*"}
+            }).toArray();
+        console.log(sounds);
+        return sounds;
     }
 
     static async fetchById(id) {
