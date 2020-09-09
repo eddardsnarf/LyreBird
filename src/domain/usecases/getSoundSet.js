@@ -1,8 +1,7 @@
 const ServiceError = require('../../utils/serviceError');
-const SoundSet = require('../../data/model/soundSet');
 
-exports.getSoundSet = async (setId) => {
-    const soundSet = await SoundSet.fetchById(setId);
+exports.getSoundSet = async (setId, soundSetRepo) => {
+    const soundSet = await soundSetRepo.fetchById(setId);
     if (soundSet !== undefined) {
         return soundSet;
     } else {

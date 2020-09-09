@@ -1,25 +1,50 @@
 {
-  "env": {
-    "commonjs": true,
-    "es2020": true,
-    "node": true
-  },
-  "extends": "eslint:recommended",
-  "parserOptions": {
-    "ecmaVersion": 2020
-  },
+  "parser": "babel-eslint",
+  "extends": "standard",
+  "plugins": [
+    "standard",
+    "promise"
+  ],
   "rules": {
-    "semi": [
-      "warn",
-      "always"
+    "indent": [
+      "error",
+      4,
+      {
+        "SwitchCase": 1
+      }
     ],
+    "one-var": 2,
+    "no-var": "error",
     "quotes": [
-      "warn",
+      "error",
       "single"
     ],
-    "comma-dangle": [
-      "warn",
-      "only-multiline"
-    ]
+    "semi": [
+      "error",
+      "always"
+    ],
+    "eqeqeq": [
+      "error",
+      "always"
+    ],
+    "keyword-spacing": [
+      "error"
+    ],
+    "block-spacing": [
+      "error"
+    ],
+    "object-curly-spacing": [
+      "error",
+      "always"
+    ],
+    "object-property-newline": [
+      "error"
+    ],
+    "eol-last": [
+      "error",
+      "always"
+    ],
+    "no-path-concat": "off",
+    "space-before-function-paren": "error"
   }
 }

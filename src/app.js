@@ -11,7 +11,6 @@ app.use(bodyParser.json());
 app.use(storageRoutes);
 app.use('/admin', adminRoutes);
 
-mongoConnect()
-  .then(() => {
+mongoConnect().then(() => {
     app.listen(3000);
-  });
+});
