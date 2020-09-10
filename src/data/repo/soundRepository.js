@@ -1,25 +1,27 @@
-const SOUND_COLLECTION_NAME = 'sounds';
-const mongodb = require('mongodb');
+const Sound = require('../../data/model/sound');
 
 module.exports = class SoundRepository {
-    constructor (db) {
-        this.db = db;
-    }
-
     save = async (sounds) => {
-        const savedSoundsResult = await this.db().collection(SOUND_COLLECTION_NAME)
-            .insertMany(sounds);
+        const savedSoundsResult = await Sound.insertMany(sounds);
         console.log(savedSoundsResult);
-        return savedSoundsResult.ops;
+        return savedSoundsResult
+            .map((doc) => doc.toObject());
     }
 
-    fetchByName = async (name) => {
-        const sounds = await this.db().collection(SOUND_COLLECTION_NAME)
-            .find({
-                name: { $regex: '.*' + name + '.*', $options: 'i' }
-            }).toArray();
-        console.log(sounds);
-        return sounds;
+    fetchByName = async (name, page, limit) => {
+        const soundsQuery = Sound.find({
+            name: { $regex: '.*' + name + '.*', $options: 'i' }
+        });
+        if (limit > 0) {
+            soundsQuery.limit(limit);
+        }
+        if (page > -1) {
+            soundsQuery.skip(page * limit);
+        }
+        const sounds = await soundsQuery.exec();
+        const soundObjs = sounds.map((doc) => doc.toObject());
+        console.log(soundObjs);
+        return soundObjs;
     }
 
     fetchById = async (id) => {
@@ -27,13 +29,13 @@ module.exports = class SoundRepository {
     }
 
     fetchByIds = async (ids) => {
-        const sounds = await this.db().collection(SOUND_COLLECTION_NAME)
-            .find({
-                _id: {
-                    $in: ids.map((id) => new mongodb.ObjectID(id))
-                }
-            }).toArray();
-        console.log(sounds);
-        return sounds;
+        const sounds = await Sound.find({
+            _id: {
+                $in: ids
+            }
+        });
+        const soundsResult = sounds.map((doc) => doc.toObject());
+        console.log(soundsResult);
+        return soundsResult;
     }
 };

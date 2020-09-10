@@ -1,8 +1,18 @@
-class Sound {
-    constructor (name, path) {
-        this.name = name;
-        this.path = path;
-    }
-}
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-module.exports = Sound;
+const soundSchema = new Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    path: {
+        type: String,
+        required: true
+    }
+},
+{ versionKey: false });
+
+soundSchema.index({ name: 1 });
+
+module.exports = mongoose.model('Sound', soundSchema);

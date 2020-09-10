@@ -2,15 +2,13 @@ const saveUploadedFiles = require('../../domain/usecases/saveUploadedFileData').
 const saveSoundSet = require('../../domain/usecases/saveSoundSet').saveSoundSet;
 const checkFileUpload = require('../../domain/usecases/checkFileUpload').checkFileUpload;
 const ServiceError = require('../../utils/serviceError');
-const getDb = require('../../data/db/database').getDb;
-
 const SoundRepository = require('../../data/repo/soundRepository');
 const SoundSetRepository = require('../../data/repo/soundSetRepository');
 
 module.exports = class AdminController {
-    constructor() {
-        this.soundRepo = new SoundRepository(getDb);
-        this.soundSetRepo = new SoundSetRepository(getDb);
+    constructor () {
+        this.soundRepo = new SoundRepository();
+        this.soundSetRepo = new SoundSetRepository();
     }
 
     postSounds = async (req, res) => {

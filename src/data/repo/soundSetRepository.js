@@ -1,17 +1,11 @@
-const SOUND_SET_COLLECTION_NAME = 'soundSets';
+const SoundSet = require('../../data/model/soundSet');
 const mongodb = require('mongodb');
 
 module.exports = class SoundSetRepository {
-    constructor (db) {
-        this.db = db;
-    }
-
     save = async (soundSet) => {
-        const savedSet = await this.db().collection(SOUND_SET_COLLECTION_NAME)
-            .insertOne(soundSet);
-
-        console.log(savedSet.ops[0]);
-        return savedSet.ops[0];
+        const savedSet = await SoundSet.create(soundSet);
+        console.log(savedSet.toObject());
+        return savedSet.toObject();
     }
 
     fetchById = async (setId) => {
@@ -36,9 +30,8 @@ module.exports = class SoundSetRepository {
                     soundIds: false
                 }
             }];
-        const savedSets = await this.db().collection(SOUND_SET_COLLECTION_NAME)
-            .aggregate(aggregateOperation)
-            .next();
+        const savedSets = await SoundSet
+            .aggregate(aggregateOperation);
 
         console.log(savedSets);
         return savedSets;

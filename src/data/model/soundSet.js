@@ -1,11 +1,20 @@
-const mongodb = require('mongodb');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-class SoundSet {
-    constructor (name, iconUrl, soundIds) {
-        this.name = name;
-        this.iconUrl = iconUrl;
-        this.soundIds = soundIds.map((id) => new mongodb.ObjectID(id));
+const soundSetSchema = new Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    iconUrl: {
+        type: String,
+        required: true
+    },
+    soundIds: {
+        type: [Schema.Types.ObjectId],
+        required: true,
+        ref: 'Sound'
     }
-}
+});
 
-module.exports = SoundSet;
+module.exports = mongoose.model('SoundSet', soundSetSchema);

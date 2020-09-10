@@ -2,20 +2,22 @@ const ServiceError = require('../../utils/serviceError');
 const getSoundFileStream = require('../../domain/usecases/getSoundFileById').getSoundFileById;
 const getSoundSet = require('../../domain/usecases/getSoundSet').getSoundSet;
 const getSoundByName = require('../../domain/usecases/getSoundByName').getSoundFileByName;
-const getDb = require('../../data/db/database').getDb;
 
 const SoundRepository = require('../../data/repo/soundRepository');
 const SoundSetRepository = require('../../data/repo/soundSetRepository');
 
 module.exports = class StorageController {
     constructor () {
-        this.soundRepo = new SoundRepository(getDb);
-        this.soundSetRepo = new SoundSetRepository(getDb);
+        this.soundRepo = new SoundRepository();
+        this.soundSetRepo = new SoundSetRepository();
     }
 
     searchByName = async (req, res) => {
         try {
-            const sounds = await getSoundByName(req.query.q, this.soundRepo);
+            const q = req.query.q;
+            const page = parseInt(req.query.page) || 0;
+            const limit = parseInt(req.query.limit) || 20;
+            const sounds = await getSoundByName(q, page, limit, this.soundRepo);
             res.status(200)
                 .send(sounds);
         } catch (err) {
