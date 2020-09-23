@@ -1,5 +1,10 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
+
+export interface ISoundSchema extends mongoose.Document {
+    name: string;
+    path: string;
+}
 
 const soundSchema = new Schema({
     name: {
@@ -15,4 +20,6 @@ const soundSchema = new Schema({
 
 soundSchema.index({ name: 1 });
 
-module.exports = mongoose.model('Sound', soundSchema);
+const model = mongoose.model<ISoundSchema>('Sound', soundSchema);
+
+export default model;
