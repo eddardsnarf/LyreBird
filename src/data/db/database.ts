@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
-const MONGO_URL = 'mongodb+srv://raijin:raijin@cluster0.cvfdt.mongodb.net/fujin?retryWrites=true&w=majority';
+import mongoose from 'mongoose';
+import { MONGO_URL } from '../../utils/constants';
 
-const mongooseConnect = async () => {
+const mongooseConnect = async (): Promise<void> => {
     try {
         await mongoose.connect(MONGO_URL, {
             useNewUrlParser: true,
@@ -15,4 +15,4 @@ const mongooseConnect = async () => {
     }
 };
 
-module.exports = mongooseConnect;
+export default mongooseConnect;

@@ -1,9 +1,13 @@
 {
-  "parser": "babel-eslint",
-  "extends": "standard",
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
   "plugins": [
-    "standard",
-    "promise"
+    "@typescript-eslint"
   ],
   "rules": {
     "indent": [
@@ -13,7 +17,7 @@
         "SwitchCase": 1
       }
     ],
-    "one-var": 2,
+    "one-var": [2,"never"],
     "no-var": "error",
     "quotes": [
       "error",
@@ -36,9 +40,6 @@
     "object-curly-spacing": [
       "error",
       "always"
-    ],
-    "object-property-newline": [
-      "error"
     ],
     "eol-last": [
       "error",

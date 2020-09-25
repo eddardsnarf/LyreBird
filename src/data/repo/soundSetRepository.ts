@@ -1,14 +1,14 @@
-const SoundSet = require('../../data/model/soundSet');
-const mongodb = require('mongodb');
+import mongodb from 'mongodb';
+import SoundSet, { ISoundSetSchema } from '../model/soundSet';
 
-module.exports = class SoundSetRepository {
-    save = async (soundSet) => {
+export class SoundSetRepository {
+    public save = async (soundSet: ISoundSetSchema): Promise<ISoundSetSchema> => {
         const savedSet = await SoundSet.create(soundSet);
         console.log(savedSet.toObject());
         return savedSet.toObject();
-    }
+    };
 
-    fetchById = async (setId) => {
+    public fetchById = async (setId: string): Promise<Array<ISoundSetSchema>> => {
         const aggregateOperation = [
             {
                 $match: {
@@ -35,5 +35,5 @@ module.exports = class SoundSetRepository {
 
         console.log(savedSets);
         return savedSets;
-    }
-};
+    };
+}

@@ -1,21 +1,25 @@
-const saveUploadedFiles = require('../../domain/usecases/saveUploadedFileData').saveFiles;
-const saveSoundSet = require('../../domain/usecases/saveSoundSet').saveSoundSet;
-const checkFileUpload = require('../../domain/usecases/checkFileUpload').checkFileUpload;
-const ServiceError = require('../../utils/serviceError');
-const SoundRepository = require('../../data/repo/soundRepository');
-const SoundSetRepository = require('../../data/repo/soundSetRepository');
+import { Request, Response } from 'express';
+import { saveFiles } from '../../domain/usecases/saveUploadedFileData';
+import { saveSoundSet } from '../../domain/usecases/saveSoundSet';
+import { checkFileUpload } from '../../domain/usecases/checkFileUpload';
+import { ServiceError } from '../../utils/serviceError';
+import { SoundRepository } from '../../data/repo/soundRepository';
+import { SoundSetRepository } from '../../data/repo/soundSetRepository';
 
-module.exports = class AdminController {
-    constructor () {
+export class AdminController {
+    private readonly soundRepo: SoundRepository;
+    private readonly soundSetRepo: SoundSetRepository;
+
+    public constructor () {
         this.soundRepo = new SoundRepository();
         this.soundSetRepo = new SoundSetRepository();
     }
 
-    postSounds = async (req, res) => {
+    public postSounds = async (req: Request, res: Response): Promise<void> => {
         try {
             console.log(req.files);
             checkFileUpload(req);
-            const insertedSounds = await saveUploadedFiles(req.files, this.soundRepo);
+            const insertedSounds = await saveFiles(req.files as Array<Express.Multer.File>, this.soundRepo);
 
             res.status(200)
                 .send(insertedSounds);
@@ -34,7 +38,7 @@ module.exports = class AdminController {
         }
     }
 
-    postSoundSet = async (req, res) => {
+    public postSoundSet = async (req: Request, res: Response): Promise<void> => {
         try {
             const soundSet = await saveSoundSet(req, this.soundRepo, this.soundSetRepo);
             res.status(200)
@@ -49,5 +53,5 @@ module.exports = class AdminController {
                     .send(err);
             }
         }
-    };
-};
+    }
+}
