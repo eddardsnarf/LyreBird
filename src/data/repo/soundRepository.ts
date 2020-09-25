@@ -1,16 +1,19 @@
-const Sound = require('../../data/model/sound');
+import Sound, { ISoundSchema } from '../model/sound';
 
-module.exports = class SoundRepository {
-    save = async (sounds) => {
+export class SoundRepository {
+    public save = async (sounds: Array<ISoundSchema>): Promise<Array<ISoundSchema>> => {
         const savedSoundsResult = await Sound.insertMany(sounds);
         console.log(savedSoundsResult);
         return savedSoundsResult
             .map((doc) => doc.toObject());
     }
 
-    fetchByName = async (name, page, limit) => {
+    public fetchByName = async (name: string, page: number, limit: number): Promise<Array<ISoundSchema>> => {
         const soundsQuery = Sound.find({
-            name: { $regex: '.*' + name + '.*', $options: 'i' }
+            name: {
+                $regex: `.*${name}.*`,
+                $options: 'i'
+            }
         });
         if (limit > 0) {
             soundsQuery.limit(limit);
@@ -24,11 +27,9 @@ module.exports = class SoundRepository {
         return soundObjs;
     }
 
-    fetchById = async (id) => {
-        return (await this.fetchByIds([id]))[0];
-    }
+    public fetchById = async (id: string): Promise<ISoundSchema> => (await this.fetchByIds([id]))[0];
 
-    fetchByIds = async (ids) => {
+    public fetchByIds = async (ids: Array<string>): Promise<Array<ISoundSchema>> => {
         const sounds = await Sound.find({
             _id: {
                 $in: ids
@@ -37,5 +38,5 @@ module.exports = class SoundRepository {
         const soundsResult = sounds.map((doc) => doc.toObject());
         console.log(soundsResult);
         return soundsResult;
-    }
-};
+    };
+}
