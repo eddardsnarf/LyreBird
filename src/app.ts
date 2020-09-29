@@ -10,7 +10,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(storageRoutes);
 app.use('/admin', adminRoutes);
-app.use('/user',userRoutes);
+app.use('/users',userRoutes);
 
 mongooseConnect().then(() => {
     app.listen(3000);

@@ -1,38 +1,58 @@
 import { Request, Response } from 'express';
 import AuthRepository from '../../data/repo/auth';
+import { ServiceError } from '../../utils/serviceError';
 
 export default class UserController {
-    private readonly authService: AuthRepository;
+    private readonly authRepository: AuthRepository;
 
     public constructor () {
-        this.authService = new AuthRepository();
+        this.authRepository = new AuthRepository();
     }
 
     public loginUser = async (req: Request, res: Response): Promise<void> => {
-        const { email, password } = req.body.user;
+        const { email, password } = req.body;
         try {
-            const { user, token } = await this.authService.login(email, password);
+            const token = await this.authRepository.login(email, password);
             res.status(200)
-                .json({ user, token })
-                .send();
+                .send(token);
         } catch (e) {
-            res.json(e)
-                .status(500)
-                .send();
+            if (e instanceof ServiceError) {
+                res
+                    .status(400)
+                    .send('combo of user and password is wrong.');
+            } else {
+                res.status(500)
+                    .send(e);
+            }
         }
     }
 
     public registerUser = async (req: Request, res: Response): Promise<void> => {
-        const { name, email, password } = req.body.user;
+        const { name, email, password } = req.body;
         try {
-            const { user, token } = await this.authService.register(email, password, name);
+            const user = await this.authRepository.register(email, password, name);
             res.status(200)
-                .json({ user, token })
-                .send();
+                .send(user);
         } catch (e) {
-            res.json(e)
-                .status(500)
-                .send();
+            if (e instanceof ServiceError) {
+                res.status(e.code)
+                    .send(e.msg);
+            } else {
+                res
+                    .status(500)
+                    .send(e);
+            }
         }
+    }
+
+    public getUser = async (req: Request, res: Response): Promise<void> => {
+        const user = req.currentUser;
+        if (!user) {
+            res.status(400).send();
+        } else {
+            res.status(200)
+                .send({ name: user.name, email: user.email, role: user.role });
+        }
+
     }
 }

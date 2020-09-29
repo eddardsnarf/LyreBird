@@ -3,21 +3,21 @@ import User from '../../data/model/user';
 
 export default async (req: Request,
     res: Response,
-    next: NextFunction) => {
+    next: NextFunction): Promise<void> => {
     try {
         const token = req.token;
         if (token !== null && token !== undefined) {
-            const decodedUser = JSON.parse(token).data;
-            const user = await User.findOne({ _id: decodedUser._id });
+            const decodedUser = token.data;
+            const user = await User.findOne({ _id: { $eq: decodedUser._id } });
             if (!user) {
                 res.status(401).send();
             } else {
                 req.currentUser = user;
-                return next();
+                next();
             }
         }
     } catch (e) {
-        res.json(e).status(500).send();
+        res.status(500).send(e);
     }
 };
 

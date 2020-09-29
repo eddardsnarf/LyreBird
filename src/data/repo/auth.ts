@@ -2,39 +2,48 @@ import argon from 'argon2';
 import UserModel, { IUserSchema } from '../model/user';
 import jwt from 'jsonwebtoken';
 import { ServiceError } from '../../utils/serviceError';
+import { emailRegex, SECRET } from '../../utils/constants';
 
-export const SECRET = 'm1h41is1337kthxbbq';// TODO this should be an environment variable.
-
-interface AuthResult {
-    user: { email: string; name: string; };
+interface LoginResult {
     token: string
 }
 
+interface RegisterResult {
+    email: string;
+    name: string;
+}
+
+export interface AuthTokenData {
+    data: {
+        _id: string,
+        name: string,
+        email: string
+    }
+}
+
 export default class AuthRepository {
-    public login = async (email: string, password: string): Promise<AuthResult> => {
-        const user = await UserModel.findOne({ email });
+    public login = async (email: string, password: string): Promise<LoginResult> => {
+        const user = await UserModel.findOne({ email: { $eq: email } });
         if (!user) {
-            throw new ServiceError(404, 'user not found');
+            throw new ServiceError(400, 'user not found');
         } else {
             const correctPassword = await argon.verify(user.password, password);
             if (!correctPassword) {
                 throw new ServiceError(400, 'password incorrect');
             }
         }
-
         return {
-            user: {
-                email: user.email,
-                name: user.name,
-            },
             token: this.generateJWT(user),
         };
     }
 
-    public register = async (email: string, password: string, name: string): Promise<AuthResult> => {
-        const emailRegex = /^[a-z0-9.]+@[a-z0-9]+\.[a-z0-9]+$/;
+    public register = async (email: string, password: string, name: string): Promise<RegisterResult> => {
         if (!emailRegex.test(email)) {
             throw new ServiceError(400, 'email not valid');
+        }
+        const dbUser = await UserModel.findOne({ email: { $eq: email } });
+        if (dbUser){
+            throw new ServiceError(400,'user already exists');
         }
         const passwordHashed = await argon.hash(password);
         const user = await UserModel.create({
@@ -43,11 +52,8 @@ export default class AuthRepository {
             name
         });
         return {
-            user: {
-                email: user.email,
-                name: user.name
-            },
-            token: this.generateJWT(user)
+            email: user.email,
+            name: user.name
         };
     }
 
