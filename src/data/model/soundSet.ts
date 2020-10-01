@@ -3,7 +3,7 @@ import mongoose, { Schema } from 'mongoose';
 export interface ISoundSetSchema extends mongoose.Document {
     name: string
     iconUrl: string
-    soundIds: Schema.Types.ObjectId
+    soundIds: [string]
 }
 
 const soundSetSchema = new Schema({

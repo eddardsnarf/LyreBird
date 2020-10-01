@@ -8,7 +8,7 @@ export default async (req: Request,
         const token = req.token;
         if (token !== null && token !== undefined) {
             const decodedUser = token.data;
-            const user = await User.findOne({ _id: { $eq: decodedUser._id } });
+            const user = await User.findOne({ _id: { $eq: decodedUser._id } }, { password:0, setIds: 0 });
             if (!user) {
                 res.status(401).send();
             } else {

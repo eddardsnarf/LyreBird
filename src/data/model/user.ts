@@ -1,12 +1,12 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
-const Schema = mongoose.Schema;
 
 export interface IUserSchema extends mongoose.Document {
     email: string;
     password: string;
     name: string;
     role?: string;
+    setIds?: [string]
 }
 
 const userSchema = new Schema({
@@ -26,6 +26,11 @@ const userSchema = new Schema({
     role: {
         type: String,
         default: 'user'
+    },
+    setIds: {
+        type: [Schema.Types.ObjectId],
+        required: false,
+        ref: 'User'
     }
 },
 { versionKey: false }

@@ -1,12 +1,15 @@
 import { Request, Response } from 'express';
-import AuthRepository from '../../data/repo/auth';
+import AuthRepository from '../../data/repo/authRepository';
 import { ServiceError } from '../../utils/serviceError';
+import UserRepository from '../../data/repo/userRepository';
 
 export default class UserController {
     private readonly authRepository: AuthRepository;
+    private readonly userRepository: UserRepository;
 
     public constructor () {
         this.authRepository = new AuthRepository();
+        this.userRepository = new UserRepository();
     }
 
     public loginUser = async (req: Request, res: Response): Promise<void> => {
@@ -55,4 +58,49 @@ export default class UserController {
         }
 
     }
+
+    public favouriteSoundSet = async (req: Request, res: Response): Promise<void> => {
+        try {
+            const user = req.currentUser;
+            const setId = req.body?.setId;
+            if (!user || !setId) {
+                res.status(403).send('bad request');
+            } else {
+                const favourite = await this.userRepository.favouriteSet(user._id, setId);
+                res.status(200).send(favourite);
+            }
+        } catch (e) {
+            res.status(500).send('chernobyl happened komrade!');
+        }
+    };
+
+    public unfavouriteSoundSet = async (req: Request, res: Response): Promise<void> => {
+        try {
+            const user = req.currentUser;
+            const setId = req.params.setId;
+            if (!user || !setId) {
+                res.status(403).send('bad request');
+            } else {
+                await this.userRepository.unfavouriteSet(user._id, setId);
+                res.status(204).send();
+            }
+        } catch (e) {
+            res.status(500).send('chernobyl happened komrade!');
+        }
+    };
+
+    public getFavourites = async (req: Request, res: Response): Promise<void> => {
+        try {
+
+            const user = req.currentUser;
+            if (!user) {
+                res.status(403).send('bad request');
+            } else {
+                const favourites = await this.userRepository.getFavourites(user._id);
+                res.status(200).send(favourites);
+            }
+        } catch (e){
+            res.status(500).send('chernobyl happened komrade!');
+        }
+    };
 }
