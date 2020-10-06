@@ -2,6 +2,10 @@ import { Request, Response } from 'express';
 import AuthRepository from '../../data/repo/authRepository';
 import { ServiceError } from '../../utils/serviceError';
 import UserRepository from '../../data/repo/userRepository';
+import { login } from '../../domain/usecases/login';
+import { register } from '../../domain/usecases/register';
+import { favouriteSet, unfavouriteSet } from '../../domain/usecases/favouriteSet';
+import { getFavourites } from '../../domain/usecases/getFavourites';
 
 export default class UserController {
     private readonly authRepository: AuthRepository;
@@ -15,7 +19,7 @@ export default class UserController {
     public loginUser = async (req: Request, res: Response): Promise<void> => {
         const { email, password } = req.body;
         try {
-            const token = await this.authRepository.login(email, password);
+            const token = await login(email, password, this.authRepository);
             res.status(200)
                 .send(token);
         } catch (e) {
@@ -33,7 +37,7 @@ export default class UserController {
     public registerUser = async (req: Request, res: Response): Promise<void> => {
         const { name, email, password } = req.body;
         try {
-            const user = await this.authRepository.register(email, password, name);
+            const user = await register(email, password, name, this.authRepository);
             res.status(200)
                 .send(user);
         } catch (e) {
@@ -66,7 +70,7 @@ export default class UserController {
             if (!user || !setId) {
                 res.status(403).send('bad request');
             } else {
-                const favourite = await this.userRepository.favouriteSet(user._id, setId);
+                const favourite = await favouriteSet(user._id, setId, this.userRepository);
                 res.status(200).send(favourite);
             }
         } catch (e) {
@@ -81,7 +85,7 @@ export default class UserController {
             if (!user || !setId) {
                 res.status(403).send('bad request');
             } else {
-                await this.userRepository.unfavouriteSet(user._id, setId);
+                await unfavouriteSet(user._id, setId, this.userRepository);
                 res.status(204).send();
             }
         } catch (e) {
@@ -96,10 +100,10 @@ export default class UserController {
             if (!user) {
                 res.status(403).send('bad request');
             } else {
-                const favourites = await this.userRepository.getFavourites(user._id);
+                const favourites = await getFavourites(user._id, this.userRepository);
                 res.status(200).send(favourites);
             }
-        } catch (e){
+        } catch (e) {
             res.status(500).send('chernobyl happened komrade!');
         }
     };

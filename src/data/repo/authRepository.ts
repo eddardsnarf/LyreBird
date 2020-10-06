@@ -4,11 +4,11 @@ import jwt from 'jsonwebtoken';
 import { ServiceError } from '../../utils/serviceError';
 import { emailRegex, SECRET } from '../../utils/constants';
 
-interface LoginResult {
+export interface LoginResult {
     token: string
 }
 
-interface RegisterResult {
+export interface RegisterResult {
     email: string;
     name: string;
 }
