@@ -9,7 +9,7 @@ export const getSoundFileByName = async (
     soundRepo: SoundRepository
 ): Promise<Array<ISoundSchema>> => {
     const sounds = (await soundRepo.fetchByName(soundName, page, limit));
-    if (sounds !== undefined && sounds.length > 0) {
+    if (sounds !== undefined) {
         return sounds;
     } else {
         throw new ServiceError(404, 'sound name not found.');
