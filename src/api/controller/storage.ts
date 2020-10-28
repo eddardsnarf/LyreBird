@@ -19,7 +19,7 @@ export class StorageController {
 
     public searchByName = async (req: Request, res: Response): Promise<void> => {
         try {
-            const q: string = req.query.q as string;
+            const q: string = req.query.q as string || '';
             const page = parseInt(req.query.page as string) || 0;
             const limit = parseInt(req.query.limit as string) || 20;
             const sounds = await getSoundFileByName(q, page, limit, this.soundRepo);

@@ -37,10 +37,14 @@ export default class AuthRepository {
         };
     }
 
-    public register = async (email: string, password: string, name: string): Promise<RegisterResult> => {
+    public register = async (email: string, password: string, name: string, role:string): Promise<RegisterResult> => {
         if (!emailRegex.test(email)) {
             throw new ServiceError(400, 'email not valid');
         }
+        if (role!=='admin'&& role !== 'user'){
+            throw new ServiceError(400, 'role not valid');
+        }
+        
         const dbUser = await UserModel.findOne({ email: { $eq: email } });
         if (dbUser){
             throw new ServiceError(400,'user already exists');
@@ -48,8 +52,9 @@ export default class AuthRepository {
         const passwordHashed = await argon.hash(password);
         const user = await UserModel.create({
             password: passwordHashed,
-            email,
-            name
+            email: email,
+            name: name,
+            role: role
         });
         return {
             email: user.email,

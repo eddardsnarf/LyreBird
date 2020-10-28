@@ -35,9 +35,9 @@ export default class UserController {
     }
 
     public registerUser = async (req: Request, res: Response): Promise<void> => {
-        const { name, email, password } = req.body;
+        const { name, email, password, role } = req.body;
         try {
-            const user = await register(email, password, name, this.authRepository);
+            const user = await register(email, password, name, role ,this.authRepository);
             res.status(200)
                 .send(user);
         } catch (e) {

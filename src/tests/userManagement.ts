@@ -21,7 +21,8 @@ describe('User Management Endpoints:', () => {
             const req = {
                 name: name,
                 email: email,
-                password: 'draud3'
+                password: 'draud3',
+                role:'user'
             };
             chai.request(app)
                 .post('/users')
