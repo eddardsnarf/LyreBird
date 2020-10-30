@@ -11,18 +11,15 @@ let loginToken = '';
 let savedSoundId = '';
 chai.use(chaiHttp);
 describe('Sound Endpoints:', () => {
-    before((done) => {
-        UserModel.remove({}, (err) => {
-            SoundModel.remove({}, async (err) => {
-                const email = 'draude@pmail.com';
-                const password = 'draud3';
-                const name = 'draude';
-                const role = 'admin';
-                await registerAction(email, name, password, role);
-                loginToken = await loginAction(email, password);
-                done();
-            });
-        });
+    before(async () => {
+        await UserModel.remove({});
+        await SoundModel.remove({});
+        const email = 'draude@pmail.com';
+        const password = 'draud3';
+        const name = 'draude';
+        const role = 'admin';
+        await registerAction(email, name, password, role);
+        loginToken = await loginAction(email, password);
     });
 
     describe('post sounds', () => {
